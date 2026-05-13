@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  libraryit-server:
+    build: .
+    container_name: libraryit-server
+    ports:
+      - "139:139"
+      - "445:445"
+    volumes:
+      - ./data:/libraryit
+      - ./logs:/var/log/samba
+    entrypoint: ["/entrypoint.sh", "server"]
+    restart: unless-stopped
+
+  libraryit-logger:
+    build: .
+    container_name: libraryit-logger
+    depends_on:
+      - libraryit-server
+    volumes:
+      - ./logs:/var/log/samba
+    entrypoint: ["/entrypoint.sh", "logger"]
+    restart: unless-stopped
